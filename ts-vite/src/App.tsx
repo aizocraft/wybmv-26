@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import MusicPlayer from './components/MusicPlayer'
 
 function App() {
@@ -6,6 +6,10 @@ function App() {
   const [hearts, setHearts] = useState<string[]>([])
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [ripples, setRipples] = useState<{ id: number; x: number; y: number }[]>([])
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [volume, setVolume] = useState(0.3)
+  const [isMuted, setIsMuted] = useState(false)
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
@@ -14,6 +18,22 @@ function App() {
     window.addEventListener('mousemove', handleMouseMove)
     return () => window.removeEventListener('mousemove', handleMouseMove)
   }, [])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume
+      audioRef.current.loop = true
+      audioRef.current.play().catch(() => {
+        setIsPlaying(false)
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = isMuted ? 0 : volume
+    }
+  }, [volume, isMuted])
 
   const handleYes = (e: React.MouseEvent) => {
     setResponse('yes')
@@ -35,9 +55,41 @@ function App() {
     setTimeout(() => setRipples(prev => prev.filter(r => r.id !== newRipple.id)), 600)
   }
 
+  const togglePlay = () => {
+    if (audioRef.current) {
+      if (isPlaying) {
+        audioRef.current.pause()
+      } else {
+        audioRef.current.play()
+      }
+      setIsPlaying(!isPlaying)
+    }
+  }
+
+  const toggleMute = () => {
+    setIsMuted(!isMuted)
+  }
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value)
+    setVolume(newVolume)
+    if (newVolume > 0 && isMuted) {
+      setIsMuted(false)
+    }
+  }
+
   if (response === 'yes') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-400 via-pink-500 to-fuchsia-600 flex flex-col items-center justify-center relative overflow-hidden animate-color-shift">
+        <audio ref={audioRef} src="/isthislove.mp3" />
+        <MusicPlayer
+          isPlaying={isPlaying}
+          volume={volume}
+          isMuted={isMuted}
+          onTogglePlay={togglePlay}
+          onToggleMute={toggleMute}
+          onVolumeChange={handleVolumeChange}
+        />
         {/* Mouse-following particles */}
         <div
           className="absolute w-4 h-4 bg-pink-300 rounded-full opacity-70 animate-particle-float pointer-events-none"
@@ -99,7 +151,6 @@ function App() {
             Try Again? 💕
           </button>
         </div>
-        <MusicPlayer />
       </div>
     )
   }
@@ -107,6 +158,15 @@ function App() {
   if (response === 'no') {
     return (
       <div className="min-h-screen bg-gradient-to-br from-rose-300 via-pink-200 to-red-200 flex flex-col items-center justify-center relative overflow-hidden">
+        <audio ref={audioRef} src="/isthislove.mp3" />
+        <MusicPlayer
+          isPlaying={isPlaying}
+          volume={volume}
+          isMuted={isMuted}
+          onTogglePlay={togglePlay}
+          onToggleMute={toggleMute}
+          onVolumeChange={handleVolumeChange}
+        />
         {/* Mouse-following heart particles */}
         <div
           className="absolute text-2xl opacity-60 animate-particle-float pointer-events-none"
@@ -149,13 +209,21 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
           </button>
         </div>
-        <MusicPlayer />
       </div>
     )
   }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-red-500 via-pink-600 to-rose-700 flex items-center justify-center relative overflow-hidden">
+      <audio ref={audioRef} src="/isthislove.mp3" />
+      <MusicPlayer
+        isPlaying={isPlaying}
+        volume={volume}
+        isMuted={isMuted}
+        onTogglePlay={togglePlay}
+        onToggleMute={toggleMute}
+        onVolumeChange={handleVolumeChange}
+      />
       {/* Mouse-following heart particles */}
       <div
         className="absolute text-4xl opacity-50 animate-particle-float pointer-events-none"
@@ -228,7 +296,6 @@ function App() {
         <div className="mt-6 sm:mt-8 md:mt-10 text-sm sm:text-base md:text-lg text-white/80 animate-floating-text font-medium px-2" style={{ animationDelay: '3s' }}>
           "Love is not about finding the perfect person, but about seeing an imperfect person perfectly." 💕
         </div>
-        <MusicPlayer />
       </div>
     </div>
   )
