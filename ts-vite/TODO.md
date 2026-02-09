@@ -1,5 +1,22 @@
-# TODO: Add no.webp to the 'No' Response Page and Replace GIF on 'Yes' Page
+# TODO: Background Music Player Component
 
-- [x] Add an img element for 'no.webp' in the 'no' response section of App.tsx, positioned before the emojis (falling petals and 😔💕) for a sleek appearance.
-- [x] Style the image similarly to the 'yes' response GIF, with appropriate classes for responsiveness and animation.
-- [x] Replace the GIF on the 'yes' response page with 'happy.webp' from the public folder, maintaining the same styling and position.
+## Tasks to Complete
+- [x] Create `src/components/` folder if it doesn't exist
+- [x] Create `MusicPlayer.tsx` component with:
+  - HTML5 Audio API integration using ref
+  - Play/pause button with love-themed heart icon
+  - Volume slider control
+  - Auto-loop functionality for background music
+  - Fixed positioning (bottom-right corner)
+  - Responsive design with Tailwind CSS
+  - Love-themed styling (pinks, reds, heart icons, subtle animations)
+- [x] Edit `src/App.tsx` to:
+  - Import the MusicPlayer component
+  - Render MusicPlayer in all app states (pending, yes, no) for persistence
+- [x] Verify component integration and styling matches app aesthetic
+- [x] Test audio playback, controls, and responsiveness (if possible)
+
+## Notes
+- Use 'isthislove.mp3' from public folder as audio source
+- Ensure component is sleek and well-positioned without obstructing main content
+- Match existing app's romantic theme and animations

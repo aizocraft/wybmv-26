@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import MusicPlayer from './components/MusicPlayer'
 
 function App() {
   const [response, setResponse] = useState<'pending' | 'yes' | 'no'>('pending')
@@ -98,6 +99,7 @@ function App() {
             Try Again? 💕
           </button>
         </div>
+        <MusicPlayer />
       </div>
     )
   }
@@ -147,6 +149,7 @@ function App() {
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
           </button>
         </div>
+        <MusicPlayer />
       </div>
     )
   }
@@ -225,6 +228,7 @@ function App() {
         <div className="mt-6 sm:mt-8 md:mt-10 text-sm sm:text-base md:text-lg text-white/80 animate-floating-text font-medium px-2" style={{ animationDelay: '3s' }}>
           "Love is not about finding the perfect person, but about seeing an imperfect person perfectly." 💕
         </div>
+        <MusicPlayer />
       </div>
     </div>
   )
